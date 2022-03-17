@@ -259,7 +259,7 @@ if(isset($_REQUEST['submit'])){
                             <div class="table-responsive">
                                 <table class="table" style="white-space:nowrap;" id="myTable">
                                     <?php
-                                    $sql = 'SELECT `customer_employee_id`"Employees ID", `name`"Name", `phone`"Phone", `email`"E-mail", `address`"Address", `comments`"Comments" FROM `customer_employee_data`';
+                                    $sql = 'SELECT `customer_employee_id`"Employees ID", `name`"Name", `phone`"Phone", `email`"E-mail", `address`"Address", `comments`"Comments" FROM `customer_employee_data` WHERE owner_id = '.$_SESSION['id'];
                                     display_query2($sql);
                                     ?>
                                 </table>
@@ -315,7 +315,7 @@ if(isset($_REQUEST['submit'])){
                             </div>
                           </div>
                             <?php } ?>
-                              <?php if (isset($_GET['insert']) || isset($_GET['editid'])) {?>
+                            <?php if (isset($_GET['insert']) || isset($_GET['editid'])) {?>
                             <div class="col-lg-12">
                                 <div class="card-box">
                                     <h4 class="header-title m-t-0 m-b-5" style="text-align: center; font-size: 22px; padding: 10px"> Add Employee</h4>

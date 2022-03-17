@@ -8,9 +8,9 @@ $password = "";
  $dbname = "raad_db";}
  if($val==1){
  	$servername = "localhost";
-	$username = "hhqzceyucq";
-	$password = "cmpj3QyEpv";
- 	$dbname = "hhqzceyucq";
+	$username = "zsqnmfsgrp";
+	$password = "MXVpU5CFtT";
+ 	$dbname = "zsqnmfsgrp";
  }
 
 // Create connection
@@ -18,7 +18,7 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 
 // Check connection
 if ($conn->connect_error) {
-	echo "hello";
+	// echo "hello";
   die("Connection failed: " . $conn->connect_error);
 }
 // echo "Connected successfully";
