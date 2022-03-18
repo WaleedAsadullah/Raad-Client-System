@@ -5,7 +5,7 @@
 
                     <!-- LOGO -->
                     <div class="topbar-left">
-                        <a href="index.html" class="logo"><span>Raad<span> Client </span></span></a>
+                        <a href="index.html" class="logo"><span>Raad<span> CSO </span></span></a>
                     </div>
                     <!-- End Logo container-->
 
@@ -13,15 +13,15 @@
                     <div class="menu-extras">
 
                         <ul class="nav navbar-nav navbar-right pull-right">
-                            <li>
+                            <!-- <li>
                                 <form role="search" class="navbar-left app-search pull-left hidden-xs">
                                      <input type="text" placeholder="Search..." class="form-control">
                                      <a href=""><i class="fa fa-search"></i></a>
                                 </form>
                             </li>
-                            <li>
+                            <li> -->
                                 <!-- Notification -->
-                                <div class="notification-box">
+                                <!-- <div class="notification-box">
                                     <ul class="list-inline m-b-0">
                                         <li>
                                             <a href="javascript:void(0);" class="right-bar-toggle">
@@ -33,19 +33,19 @@
                                             </div>
                                         </li>
                                     </ul>
-                                </div>
+                                </div> -->
                                 <!-- End Notification bar -->
                             </li>
 
                             <li class="dropdown user-box">
                                 <a href="" class="dropdown-toggle waves-effect waves-light profile " data-toggle="dropdown" aria-expanded="true">
-                                    <img src="assets/images/users/avatar-1.jpg" alt="user-img" class="img-circle user-img">
-                                    <div class="user-status away"><i class="zmdi zmdi-dot-circle"></i></div>
+                                    <img src="assets/images/users/avatar-1.png" alt="user-img" class="img-circle user-img">
+                                    <div class="user-status online"><i class="zmdi zmdi-dot-circle"></i></div>
                                 </a>
 
                                 <ul class="dropdown-menu">
                                     <li><a href="my-profile.php"><i class="ti-user m-r-5"></i> Profile</a></li>
-                                    <li><a href="javascript:void(0)"><i class="ti-settings m-r-5"></i> Settings</a></li>
+                                    <!-- <li><a href="javascript:void(0)"><i class="ti-settings m-r-5"></i> Settings</a></li> -->
                                     <li><a href="logout.php"><i class="ti-power-off m-r-5"></i> Logout</a></li>
                                 </ul>
                             </li>
@@ -77,14 +77,30 @@
                             <li>
                                 <a href="services-request.php"><i class="zmdi zmdi-view-dashboard"></i> <span> Services Request </span> </a>
                             </li>
+                            <li>
+                                <a href="wifi.php"><i class="zmdi zmdi-view-dashboard"></i> <span> Wifi Details </span> </a>
+                            </li>
+                            <li>
+                                <a href="my-employees.php"><i class="zmdi zmdi-view-dashboard"></i> <span> My Employees </span> </a>
+                            </li>
+                            <li>
+                                <a href="feedback.php"><i class="zmdi zmdi-view-dashboard"></i> <span> Feedback </span> </a>
+                            </li>
+                            <li>
+                                <a href="my-rent-record.php"><i class="zmdi zmdi-view-dashboard"></i> <span> Rent Record </span> </a>
+                            </li>
 
-                            <li class="has-submenu">
+                            <li>
+                                <a href="company-attendance.php"><i class="zmdi zmdi-view-dashboard"></i> <span> My Attendance </span> </a>
+                            </li>
+
+                            <li class="has-submenu" style="display: none;">
                                 <a href="#"><i class="zmdi zmdi-invert-colors"></i> <span> User Interface </span> </a>
                                 <ul class="submenu megamenu">
                                     <li>
                                         <ul>
-                                            <li><a href="wifi.php">Wifi Details</a></li>
-                                            <li><a href="my-employees.php">My Employees</a></li>
+                                            <!-- <li><a href="wifi.php">Wifi Details</a></li> -->
+                                            <!-- <li><a href="my-employees.php">My Employees</a></li> -->
                                             <li><a href="feedback.php">Feedback
                                             </a></li>
                                             <li><a href="my-employees.php">My Employees
@@ -121,56 +137,9 @@
                                 </ul>
                             </li>
 
-                            <li class="has-submenu">
-                                <a href="#"><i class="zmdi zmdi-collection-text"></i><span> Forms </span> </a>
-                                <ul class="submenu">
-                                    <li><a href="form-elements.html">General Elements</a></li>
-                                    <li><a href="form-advanced.html">Advanced Form</a></li>
-                                    <li><a href="form-validation.html">Form Validation</a></li>
-                                    <li><a href="form-wizard.html">Form Wizard</a></li>
-                                    <li><a href="form-fileupload.html">Form Uploads</a></li>
-                                    <li><a href="form-wysiwig.html">Wysiwig Editors</a></li>
-                                    <li><a href="form-xeditable.html">X-editable</a></li>
-                                </ul>
-                            </li>
 
-                            <li class="has-submenu">
-                                <a href="#"><i class="zmdi zmdi-view-list"></i> <span> Tables </span> </a>
-                                <ul class="submenu">
-                                    <li><a href="tables-basic.html">Basic Tables</a></li>
-                                    <li><a href="tables-datatable.html">Data Table</a></li>
-                                    <li><a href="tables-responsive.html">Responsive Table</a></li>
-                                    <li><a href="tables-editable.html">Editable Table</a></li>
-                                    <li><a href="tables-tablesaw.html">Tablesaw Table</a></li>
-                                </ul>
-                            </li>
 
-                            <li class="has-submenu">
-                                <a href="#"><i class="zmdi zmdi-chart"></i><span> Charts </span> </a>
-                                <ul class="submenu">
-                                    <li><a href="chart-flot.html">Flot Chart</a></li>
-                                    <li><a href="chart-morris.html">Morris Chart</a></li>
-                                    <li><a href="chart-chartist.html">Chartist Charts</a></li>
-                                    <li><a href="chart-chartjs.html">Chartjs Chart</a></li>
-                                    <li><a href="chart-other.html">Other Chart</a></li>
-                                </ul>
-                            </li>
-
-                            <li class="has-submenu">
-                                <a href="#"><i class="zmdi zmdi-collection-item"></i><span> Pages </span> </a>
-                                <ul class="submenu">
-                                    <li><a href="page-starter.html">Starter Page</a></li>
-                                    <li><a href="page-login.html">Login</a></li>
-                                    <li><a href="page-register.html">Register</a></li>
-                                    <li><a href="page-recoverpw.html">Recover Password</a></li>
-                                    <li><a href="page-lock-screen.html">Lock Screen</a></li>
-                                    <li><a href="page-confirm-mail.html">Confirm Mail</a></li>
-                                    <li><a href="page-404.html">Error 404</a></li>
-                                    <li><a href="page-500.html">Error 500</a></li>
-                                </ul>
-                            </li>
-
-                            <li class="has-submenu">
+                            <li class="has-submenu" style="display: none;">
                                 <a href="#"><i class="zmdi zmdi-layers"></i><span>Extra Pages </span> </a>
                                 <ul class="submenu megamenu">
                                     <li>

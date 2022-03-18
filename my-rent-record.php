@@ -46,6 +46,9 @@ for($k=0;$k<count($row_data);$k++){
     if ($row_data[$k] == "Name") {
         echo '<td><a href="my-employees.php?specific='.$row[$row_data[0]].'">'.$row[$row_data[$k]].'<a></td>';
 
+    }elseif ($row_data[$k] == "Date of Receiving") {
+        echo  '<td>'.date('d-M-Y',strtotime($row[$row_data[$k]])).'</td>';
+
     }
     else{
     echo  '<td>'.$row[$row_data[$k]].'</td>';}}
@@ -124,6 +127,7 @@ for($k=0;$k<count($row_data);$k++){
                                 
 
                                 $sql = 'SELECT `rent_detai_id`"Slip No.", user.user_name"Recived By", `month`"Month", `year`"Year" , `receiving_date`"Date of Receiving" , `amount`"Amount",`type`"Type",`cheque_number`"Cheque Number",`bank`"Bank" FROM `rent_detail`a,company_with_raad, user WHERE a.user_id = user.user_id and a.company_with_raad = company_with_raad.owner_id and a.company_with_raad = '.$_SESSION['id'].' ORDER BY rent_detai_id desc';
+                                // echo $sql;
                                 display_query2($sql);
                                 // -----------------------
 
