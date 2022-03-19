@@ -2,6 +2,54 @@
 include_once('session.php');
 include_once('functions.php');
 
+if(isset($_REQUEST['submit'])){
+    $status = "Pending";
+    if($_SESSION['account']==0){
+        $status = "Approved";
+    }
+    $sql = 'INSERT INTO `attendance`(`attendance_id`, `user_id`, `user_date`, `depart`, `name`, `no`, `time`, `location_id`, `id_num`, `verify_code`, `card_no`, `type`, `status`) VALUES (NULL,\'';
+    $sql .= get_curr_user();
+    $sql .= '\', CURRENT_TIMESTAMP,"My Company", \''.idtonames($_REQUEST['no'],'no','name','attendance').'\', \''.$_REQUEST['no'].'\', \''.$_REQUEST['time'].'\',"101",NULL,"Manual",NULL,"Manual","'.$status.'")';
+    insert_query($sql);
+}
+function checkHoilday($date,$emplyee_id){
+$sql = 'SELECT `id`, `entry_by`, `date`, `title` FROM `holiday` WHERE `date` = "'.$date.'" and ( type = "Common" OR employe_id = "'.$emplyee_id.'") and status = "Approved"';
+// echo $sql;
+$result = mysqli_query(connect_db(),$sql);
+if(mysqli_num_rows($result)>0){
+    $row= mysqli_fetch_assoc($result);
+
+    return ["condition"=>true , "title"=>$row['title']];
+
+}else{
+    return ["condition"=>false , "title"=>"not"]; 
+}
+
+}
+// if(isset($_REQUEST['submit'])){
+//     // print_r($_REQUEST);
+//     $sql = 'INSERT INTO `attendance`(`attendance_id`, `user_id`, `user_date`, `depart`, `name`, `no`, `time`, `location_id`, `id_num`, `verify_code`, `card_no`) VALUES  (NULL,\'';
+//     $sql .= get_curr_user();
+//     $sql .= '\', CURRENT_TIMESTAMP,"My Company", \''.$_REQUEST['name'].'\', \''.$_REQUEST['no'].'\', \''.$_REQUEST['time'].'\',"101",NULL,"Manual",NULL)';
+//     // echo $sql;
+//     insert_query($sql);
+// }
+
+// // // ------------------------
+
+// // ///edit code
+// check_edit("attendance","attendance_id");
+// edit_display("attendance","attendance_id");
+// // //end of edit code -shift view below delete
+
+// // // ------------------------
+// if(isset($_REQUEST['deleteid']) && is_numeric($_REQUEST['deleteid'])){ $sql = 'DELETE FROM `attendance` WHERE `attendance`.`attendance_id` = '.$_REQUEST['deleteid'];
+
+// insert_query($sql);
+// // echo "done deleting";
+// }
+// // $sql = "SELECT * FROM `ac_annual_appraisal`";
+
 function nameByNo($para){
 $new_array = explode(",", $para);
 // print_r($new_array);
@@ -11,6 +59,89 @@ for($i=0;$i<sizeof($new_array);$i++){
     $name .= " ";
 }
 return $name;
+}
+
+
+function display_query_atten($sql)
+{
+
+ $conn = connect_db();
+  $result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+  // output data of each row
+
+  
+//get_current_form();
+                                               
+   $i = 0;                                     
+  while($row = $result->fetch_assoc()) {
+    if($i==0)
+    {
+echo '
+                <thead>
+                  <tr>
+                    <th>S.No</th>
+                    <th></th>
+                    <th></th>';
+$row_data = array_keys($row);
+$id_column = "";
+for($j=0;$j<count($row_data);$j++){
+
+  if($j==0) $id_column = $row_data[$j];
+
+    echo  "<th>".$row_data[$j]."</th>"; }
+                                                   
+    echo   '</tr>
+         </thead>
+      <tbody><tr><td></td><td></td><td></td>';
+
+$col_counter = 3;
+       for($si=$col_counter;$si<count($row_data)+3;$si++){
+      echo '
+      <th style="font-weight: normal">
+      <input type="text" style="width:100%" id="myInput'.$col_counter.'" onkeyup="myFunction('.$col_counter.')" placeholder="Search..." title="Type in a word" class="form-control" >
+      </th>';
+      $col_counter++;
+      }
+      echo"</tr>";
+
+
+
+    }
+  $i++;  
+    echo '<tr>
+              <td>'.$i.'</td>
+              <td style="text-align:center;"><a style="color:rgb(16,196,105);" href="'.$_SERVER['PHP_SELF'].'?editid='.$row[$id_column].'"><i class="zmdi zmdi-edit"></i></a></td>
+            
+              <td style="text-align:center;"><a style="color:rgb(255,87,90);" href="'.$_SERVER['PHP_SELF'].'?deleteid='.str_replace(" ","___",$row[$id_column]).'"><i class="fa fa-trash-o" onclick="return confirm(\'Are you sure?\')"></i></a></td>';
+for($k=0;$k<count($row_data);$k++){ 
+
+    if(($row_data[$k]=="status")){
+      if($row[$row_data[$k]] =="Approved"){
+        $class = "label label-success";
+      }elseif ($row[$row_data[$k]] =="Rejected") {
+        $class = "label label-danger";
+      }else{
+        $class = "label label-warning";
+      }
+       echo '<td data-name="'.$row_data[$k].'" class="'.$row_data[$k].'" data-type="select" data-pk="'.$row[$row_data[0]].'"><span class="'.$class.'">'.$row[$row_data[$k]].'</span></td>';
+
+      // echo '<td><span class="'.$class.'">'.$row[$row_data[$k]].'</span></td>';
+    }else{
+    echo  '<td>'.$row[$row_data[$k]].'</td>';
+    }
+}
+
+   echo  '</tr>';
+  }
+
+    echo '   </tbody>';
+} else {
+  echo "0 results";
+}
+    
+
 }
 function display_query2($sql)
 {
@@ -118,7 +249,7 @@ insert_query($sql);
 
         <link rel="shortcut icon" href="assets/images/favicon.png">
 
-        <title>Services Requests</title>
+        <title>Attendance</title>
 
         <!--Chartist Chart CSS -->
         <link rel="stylesheet" href="assets/plugins/chartist/dist/chartist.min.css">
@@ -158,123 +289,34 @@ insert_query($sql);
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="card-box">
-                                <?php
-                                $con = connect_db();
-
-                                echo '
-                                <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-                                <div class="modal-dialog">
-                                <div class="modal-content">
-                                <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                <h4 class="modal-title">Choose File</h4>
-                                </div>
-                                <form action="" enctype="multipart/form-data" method="post">
-                                <div class="modal-body">
-                                <div class="row">
-                                <div class="col-md-12">
-                                <div class="form-group">
-                                <input type="file" name="file">
-                                </div>
-                                </div>
-                                </div>
-                                </div>
-                                <div class="modal-footer">
-                                <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-info btn w-md waves-effect waves-light" name="import"> Import </button>
-                                </div>
-                                </form>
-                                </div>
-                                </div>
-                                </div>';
-
-                                if(isset($_POST["import"]) ){
-
-                                    $filename=$_FILES["file"]["tmp_name"];    
-                                    if($_FILES["file"]["size"] > 0)
-                                    {
-                                        $file = fopen($filename, "r");
-
-                                        while (($getData = fgetcsv($file,1000000, ",")) !== FALSE)
-                                        {
-                                            // echo "Yes<br>";
-                                            // echo $getData[3];
-        // echo "<br>";
-            // YYYY-MM-DD hh:mm:ss
-                                            $date  = $getData[3];
-                                            $date = explode("/", $date);
-                                            "<br>";
-                                            "month ".$date[0]."";
-                                            "<br>";
-                                            "date ".$date[1]."";
-                                            "<br>";
-                                            $year = substr($date[2],0,4);
-                                            "year ".$year."";
-                                            "<br>";
-                                            $time = explode(" ",substr($date[2],4));
-        // print_r($time);
-                                            "<br>";
-                                            "Time ".$time[1]."";
-                                            "<br>";
-        // print_r( $getData);
-        // echo "<br>";
-                                            $add = '';
-                                            if (strlen($date[1])){
-                                                $add = '0';
-                                            }
-
-                                            $data_time = $year."-".$date[0]."-".$add."".$date[1]." ".$time[1].":00";
-                                            $data_time =  date("Y-m-d H:i", strtotime($getData[3]));
-
-        // echo "2020-12-17 07:19:11";
-        // echo"<br>";
-        // echo $data_time ;
-        // echo"<br>";
-                                            $sql = 'INSERT INTO `attendance`(`attendance_id`, `user_id`, `user_date`, `depart`, `name`, `no`, `time`, `location_id`, `id_num`, `verify_code`, `card_no`) VALUES (NULL,\'';
-                                            $sql .= get_curr_user();
-                                            $sql .= '\', CURRENT_TIMESTAMP, \''.$getData[0].'\', \''.$getData[1].'\', \''.$getData[2].'\', \''.$data_time.'\', \''.$getData[4].'\',"0", \''.$getData[6].'\',"0")';
-
-                                            // echo $sql;
-                                            // echo "<br>";
-        // echo $sql;
-        // echo "<br>";
-                                            $result = mysqli_query(connect_db(), $sql);
-                                            echo $result;
-                                            echo "<br>";
-
-                                        }
-
-                                        fclose($file);  
-                                    }
-                                }
-
-                                ?>                                  
+                                             
                                 <div class="m-t-5 m-b-5" style="text-align: center" >
-                                 <a  href="attendance.php?insert=true" > <button type="button" class="btn btn-primary btn w-md waves-effect waves-light"  >+ Add</button></a>
-                                 <a  href="attendance.php" > <button type="button" class="btn btn-primary btn w-md waves-effect waves-light"  >View </button></a>
+                                 <a  href="company-attendance.php?insert=true" > <button type="button" class="btn btn-primary btn w-md waves-effect waves-light"  >+ Add</button></a>
+                                 <a  href="company-attendance.php" > <button type="button" class="btn btn-primary btn w-md waves-effect waves-light"  >View </button></a>
                                  <?php 
                                  $title = "ID|Depart|Name|Employee_ID|Time|Locattion_ID|ID Number|Verify Code|Card No";
 
-                                 $Export = 'SELECT `SELECT `attendance_id`, `depart`, `name`, `no`, `time`, `location_id`, `id_num`, `verify_code`, `card_no` FROM `attendance`';
+                                 $Export = 'SELECT `attendance_id`, `depart`, `name`, `no`, `time`, `location_id`, `id_num`, `verify_code`, `card_no` FROM `attendance`';
                                  $name_file = "Attendance";
 
                                  $exportLink = "export.php?title=".$title."&Export=".$Export."&name_file=".$name_file."";
                                  ?>
                                  <a href="<?php echo $exportLink ?>"> <button type="button" class="btn btn-info btn w-md waves-effect waves-light" > Export  </button></a>
-                                 <a  href="attendance.php?details=true" > <button type="button" class="btn btn-primary btn w-md waves-effect waves-light"  >Details</button></a>
-                                 <a>
+                                 <a  href="company-attendance.php?details=true" > <button type="button" class="btn btn-primary btn w-md waves-effect waves-light"  >Details</button></a>
+                                 <!-- <a>
                                     <button type="button" class="btn btn-purple btn w-md waves-effect waves-light"  data-toggle="modal" data-target="#con-close-modal" > Import </button>
-                                </a>
+                                </a> -->
                                 <a href="attendance-configuration.php">
                                     <button type="button" class="btn btn-purple btn w-md waves-effect waves-light"   > Employee Timing </button>
                                 </a>
-                                <a href="holiday.php">
+                                <!-- <a href="holiday.php">
                                     <button type="button" class="btn btn-info btn w-md waves-effect waves-light"   > Add Holiday </button>
-                                </a>
+                                </a> -->
 
                             </div>
                         </div>
                     </div>
+                    <?php if(!isset($_GET['insert'])){ ?>
                     <div class="col-lg-12" >
                         <div class="card-box">
                             <h4 class="header-title m-t-0 m-b-5" style="text-align: center; font-size: 22px; padding: 10px">Set Values</h4>
@@ -293,29 +335,31 @@ insert_query($sql);
                                         <div class="form-group">
                                             <label for="">Month </label>
                                             <select class="form-control select2" name="month">
-                                                 <option value="January" <?php if(isset($_REQUEST['month']) && $_REQUEST['month'] == "January")echo "selected" ?>>January</option>
 
-                                                <option value="February" <?php if(isset($_REQUEST['month']) && $_REQUEST['month'] == "February")echo "selected" ?> >February</option>
-                                                <option value="March" <?php if(isset($_REQUEST['month']) && $_REQUEST['month'] == "March")echo "selected" ?> >March</option>
+                                                <option value="January" <?php if(isset($_REQUEST['month']) && $_REQUEST['month'] == "January"){echo "selected";}elseif(!isset($_REQUEST['month']) && date('F')=="January"){echo "selected";}else{} ?>>January</option>
 
-                                                <option value="April" <?php if(isset($_REQUEST['month']) && $_REQUEST['month'] == "April")echo "selected" ?> >April</option>
+                                             <option value="February" <?php if(isset($_REQUEST['month']) && $_REQUEST['month'] == "February"){echo "selected";}elseif(!isset($_REQUEST['month']) && date('F')=="February"){echo "selected";}else{} ?> >February</option>
+                                             <option value="March" <?php if(isset($_REQUEST['month']) && $_REQUEST['month'] == "March"){echo "selected";}elseif(!isset($_REQUEST['month']) && date('F')=="March"){echo "selected";}else{} ?> >March</option>
 
-                                                <option value="May" <?php if(isset($_REQUEST['month']) && $_REQUEST['month'] == "May")echo "selected" ?>>May</option>
+                                             <option value="April" <?php if(isset($_REQUEST['month']) && $_REQUEST['month'] == "April"){echo "selected";}elseif(!isset($_REQUEST['month']) && date('F')=="April"){echo "selected";}else{} ?> >April</option>
 
-                                                <option value="June" <?php if(isset($_REQUEST['month']) && $_REQUEST['month'] == "June")echo "selected" ?>>June</option>
+                                             <option value="May" <?php if(isset($_REQUEST['month']) && $_REQUEST['month'] == "May"){echo "selected";}elseif(!isset($_REQUEST['month']) && date('F')=="May"){echo "selected";}else{} ?>>May</option>
 
-                                                <option value="July" <?php if(isset($_REQUEST['month']) && $_REQUEST['month'] == "July")echo "selected" ?>>July</option>
+                                             <option value="June" <?php if(isset($_REQUEST['month']) && $_REQUEST['month'] == "June"){echo "selected";}elseif(!isset($_REQUEST['month']) && date('F')=="June"){echo "selected";}else{} ?>>June</option>
 
-                                                <option value="August" <?php if(isset($_REQUEST['month']) && $_REQUEST['month'] == "August")echo "selected" ?>>August</option>
+                                             <option value="July" <?php if(isset($_REQUEST['month']) && $_REQUEST['month'] == "July"){echo "selected";}elseif(!isset($_REQUEST['month']) && date('F')=="July"){echo "selected";}else{} ?>>July</option>
 
-                                                <option value="September" <?php if(isset($_REQUEST['month']) && $_REQUEST['month'] == "September")echo "selected" ?>>September</option>
-                                                <option value="October" <?php if(isset($_REQUEST['month']) && $_REQUEST['month'] == "October")echo "selected" ?>>October</option>
+                                             <option value="August" <?php if(isset($_REQUEST['month']) && $_REQUEST['month'] == "August"){echo "selected";}elseif(!isset($_REQUEST['month']) && date('F')=="August"){echo "selected";}else{} ?>>August</option>
 
-                                                <option value="November" <?php if(isset($_REQUEST['month']) && $_REQUEST['month'] == "November")echo "selected" ?>>November</option>
+                                             <option value="September" <?php if(isset($_REQUEST['month']) && $_REQUEST['month'] == "September"){echo "selected";}elseif(!isset($_REQUEST['month']) && date('F')=="September"){echo "selected";}else{} ?>>September</option>
 
-                                                <option value="December" <?php if(isset($_REQUEST['month']) && $_REQUEST['month'] == "December")echo "selected" ?>>December</option>
-                                                
-                                            </select>
+                                             <option value="October" <?php if(isset($_REQUEST['month']) && $_REQUEST['month'] == "October"){echo "selected";}elseif(!isset($_REQUEST['month']) && date('F')=="October"){echo "selected";}else{} ?>>October</option>
+
+                                             <option value="November" <?php if(isset($_REQUEST['month']) && $_REQUEST['month'] == "November"){echo "selected";}elseif(!isset($_REQUEST['month']) && date('F')=="November"){echo "selected";}else{} ?>>November</option>
+
+                                             <option value="December" <?php if(isset($_REQUEST['month']) && $_REQUEST['month'] == "December"){echo "selected";}elseif(!isset($_REQUEST['month']) && date('F')=="December"){echo "selected";}else{} ?>>December</option>
+
+                                         </select>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
@@ -334,30 +378,9 @@ insert_query($sql);
                                     </button>
                                 </div>
                             </form>
-                            <?php 
-                            // if(isset($_REQUEST['value'])){
-
-                            //     $form = $_REQUEST['form'];
-                            //     $to = $_REQUEST['to'];
-                            //     $chech_in = $_REQUEST['chech_in'];
-                            //     $check_out = $_REQUEST['check_out'];
-                            //     $grace_entry = $_REQUEST['grace_entry'];
-                            //     $half_day_entry_1 = $_REQUEST['half_day_entry'];
-                            //     $grace_exit = $_REQUEST['grace_exit'];
-                            //     $half_day_exit_1 =  $_REQUEST['half_day_exit'];
-                            // }else{
-                            //     $form = date("Y-m-d", strtotime("first day of previous month"));
-                            //     $to = date("Y-m-d", strtotime("last day of previous month"));
-                            //     $chech_in = "09:00:00";
-                            //     $check_out = "19:00:00";
-                            //     $grace_entry = "15";
-                            //     $half_day_entry_1 = "180";
-                            //     $grace_exit = "15";
-                            //     $half_day_exit_1 =  "180";
-                            // }
-                            ?>
                         </div>
                     </div>
+                  <?php } ?>
 
                     <?php if(isset($_GET['details'])){ ?>
                     <div class="col-lg-12">
@@ -368,7 +391,7 @@ insert_query($sql);
                             <div class="table-responsive">
                                 <table id="myTable" class="tablesaw table m-b-0 tablesaw-columntoggle table-bordered ">
                                     <?php
-                                    $sql = 'SELECT `attendance_id`"ID", `user`.`user_name`"Entry By",`name`"Employee Name", `no`"Employee ID", `time`"Timing", `type` "Type", `status` FROM `attendance`,`user` where `attendance`.`user_id` = `user`.`user_id` Order by `attendance`.`attendance_id` desc';
+                                    $sql = 'SELECT `attendance_id`"ID", `user`.`user_name`"Entry By",`name`"Employee Name", `no`"Employee ID", `time`"Timing", `type` "Type", `status` FROM `attendance`,`user` where no in ('.employeOfCompany().') and `attendance`.`user_id` = `user`.`user_id` Order by `attendance`.`attendance_id` desc';
                                     display_query_atten($sql);
                                     // -----------------------
 
@@ -422,6 +445,7 @@ $row = mysqli_fetch_assoc(mysqli_query(connect_db(),$sql));
 $form = date("Y-m-d", strtotime("first day of ".$_REQUEST['month']." ".$_REQUEST['year'].""));
 // echo $form;
 $to = date("Y-m-d", strtotime("last day of ".$_REQUEST['month']." ".$_REQUEST['year'].""));
+$to = date("Y-m-d", strtotime($to." +1 days"));
 $chech_in = $row['entry_time'];
 
 $check_out = $row['exit_time'];
@@ -437,6 +461,7 @@ $sql = 'SELECT `confi_id`, `user_id`, `user_date`, `attendance_no`, `type`, `wor
 $row = mysqli_fetch_assoc(mysqli_query(connect_db(),$sql));
 $form = date("Y-m-d", strtotime("first day of this month"));
 $to = date("Y-m-d");
+$to = date("Y-m-d", strtotime($to." +1 days"));
 $chech_in = $row['entry_time'];
 
 $check_out = $row['exit_time'];
@@ -956,7 +981,7 @@ echo '<h4 class="header-title m-t-0 m-b-5" style="text-align: center; font-size:
                                     </thead>
                                     <?php
 
-                                    $sql_no = 'SELECT `attendance_no` FROM `user_attendance_configuration` GROUP BY `attendance_no`';
+                                    $sql_no = 'SELECT `attendance_no` FROM `user_attendance_configuration` where  attendance_no in ('.employeOfCompany().') GROUP BY `attendance_no`';
                                     // echo $sql_no;
                                     // = 
                                     $result_no = mysqli_query(connect_db(),$sql_no);
@@ -1325,8 +1350,8 @@ if(strtotime($working_hours)>=strtotime($work_hour)){
 }
 }
                                       echo "<tr>
-                                      <td><a href='attendance.php?id_no=".$row_no['attendance_no']."&name=".$row_no['name']."&form=".$form."&to=".$to."&value=value&year=".date('Y',strtotime($form))."&month=".date('m',strtotime($form))."'>".$row_no['attendance_no']."</a></td>
-                                      <td><a href='attendance.php?id_no=".$row_no['attendance_no']."&name=".$row_no['name']."&form=".$form."&to=".$to."&value=value&year=".date('Y',strtotime($form))."&month=".date('m',strtotime($form))."'>".$row_no['name']."</a></td>
+                                      <td><a href='company-attendance.php?id_no=".$row_no['attendance_no']."&name=".$row_no['name']."&form=".$form."&to=".$to."&value=value&year=".date('Y',strtotime($form))."&month=".date('F',strtotime($form))."'>".$row_no['attendance_no']."</a></td>
+                                      <td><a href='company-attendance.php?id_no=".$row_no['attendance_no']."&name=".$row_no['name']."&form=".$form."&to=".$to."&value=value&year=".date('Y',strtotime($form))."&month=".date('F',strtotime($form))."'>".$row_no['name']."</a></td>
 
                                             <td>".$late_entry."</td>
                                             <td>".$late_and_penalty_entry."</td>
@@ -1361,7 +1386,7 @@ if(strtotime($working_hours)>=strtotime($work_hour)){
                         <div class="card-box">
                             <h4 class="header-title m-t-0 m-b-5" style="text-align: center; font-size: 22px; padding: 10px"> Employee Entery Form </h4>
                             <br>
-                            <form action="attendance.php" method="post">
+                            <form action="company-attendance.php" method="post">
 
 
                                 <?php 

@@ -91,6 +91,10 @@
                             </li>
 
                             <li>
+                                <a href="my-item-usage.php"><i class="zmdi zmdi-view-dashboard"></i> <span> My Item Usage </span> </a>
+                            </li>
+
+                            <li>
                                 <a href="company-attendance.php"><i class="zmdi zmdi-view-dashboard"></i> <span> My Attendance </span> </a>
                             </li>
 
