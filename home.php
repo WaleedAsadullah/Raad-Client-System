@@ -20,7 +20,9 @@ if ($result->num_rows > 0) {
 echo '
                 <thead>
                   <tr>
-                    <th>S.No</th>';
+                    <th>S.No</th>
+                    <th></th>
+                    <th></th>';
 $row_data = array_keys($row);
 $id_column = "";
 for($j=0;$j<count($row_data);$j++){
@@ -31,17 +33,30 @@ for($j=0;$j<count($row_data);$j++){
                                                    
     echo   '</tr>
          </thead>
-      <tbody>';
+      <tbody><tr><td></td><td></td><td></td>';
+
+$col_counter = 3;
+       for($si=$col_counter;$si<count($row_data)+3;$si++){
+      echo '
+      <th style="font-weight: normal">
+      <input type="text" style="width:100%" id="myInput'.$col_counter.'" onkeyup="myFunction('.$col_counter.')" placeholder="Search..." title="Type in a word">
+      </th>';
+      $col_counter++;
+      }
+      echo"</tr>";
 
 
 
     }
-  $i++; 
-      echo '<tr>
-              <td>'.$i.'</td>';
+  $i++;  
+    echo '<tr>
+              <td>'.$i.'</td>
+              <td style="text-align:center;"><a style="color:rgb(16,196,105);" href="'.$_SERVER['PHP_SELF'].'?editid='.$row[$id_column].'"><i class="zmdi zmdi-edit"></i></a></td>
+            
+              <td style="text-align:center;"><a style="color:rgb(255,87,90);" href="'.$_SERVER['PHP_SELF'].'?deleteid='.str_replace(" ","___",$row[$id_column]).'"><i class="fa fa-trash-o" onclick="return confirm(\'Are you sure?\')"></i></a></td>';
 for($k=0;$k<count($row_data);$k++){ 
-    if ($row_data[$k] == "Name") {
-        echo '<td><a href="my-employees.php?specific='.$row[$row_data[0]].'">'.$row[$row_data[$k]].'<a></td>';
+    if ($row_data[$k] == "Task Title") {
+        echo '<td><a href="task-track.php?specific='.$row[$row_data[0]].'">'.$row[$row_data[$k]].'<a></td>';
 
     }
     else{
@@ -57,10 +72,30 @@ for($k=0;$k<count($row_data);$k++){
     
 
 }
+// ------------------------
+if(isset($_REQUEST['submit'])){
+// print_r($_REQUEST);
+$task_assigned_by = get_curr_user();
+$sql = 'INSERT INTO `rd_services_request`(`request_id`, `user_id`, `user_date` ,`user_type`, `title`, `description`) VALUES (NULL,\'';
+$sql .= get_curr_user();
+$sql .= '\', CURRENT_TIMESTAMP,"Client", \''.$_REQUEST['title'].'\', \''.$_REQUEST['description'].'\')';
+// echo $sql;
+insert_query($sql);
+}
 
+// ------------------------
 
+///edit code
+check_edit("rd_services_request","request_id");
+edit_display("rd_services_request","request_id");
+//end of edit code -shift view below delete
 
+// ------------------------
+if(isset($_REQUEST['deleteid']) && is_numeric($_REQUEST['deleteid'])){ $sql = 'DELETE FROM `rd_services_request` WHERE `rd_services_request`.`request_id` = '.$_REQUEST['deleteid'];
 
+insert_query($sql);
+// echo "done deleting";
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -72,7 +107,7 @@ for($k=0;$k<count($row_data);$k++){
 
         <link rel="shortcut icon" href="assets/images/favicon.png">
 
-        <title>My Employees</title>
+        <title>Services Requests</title>
 
         <!--Chartist Chart CSS -->
         <link rel="stylesheet" href="assets/plugins/chartist/dist/chartist.min.css">
@@ -109,59 +144,58 @@ for($k=0;$k<count($row_data);$k++){
             <div class="container">
 
                 <!-- Page-Title -->
-                <br>
                 <div class="row">
-                    <?php if (!isset($_GET['specific'])) {
-                     ?>
                     <div class="col-sm-12">
-                        <div class="card-box">
-                            <h4 class="header-title m-t-0 m-b-30">Wifi Details</h4>
-                            <div class="table-responsive">
-                                <table class="table" style="white-space:nowrap;" id="myTable">
-                                    <?php
-                                    $sql = 'SELECT `customer_employee_id`"Employees ID", `name`"Name", `phone`"Phone", `email`"E-mail", `address`"Address", `comments`"Comments" FROM `customer_employee_data`';
-                                    display_query2($sql);
-                                    ?>
-                                </table>
-                            </div>
-                        </div>
-                    </div><!-- end col -->
-                <?php } ?>
-                    <?php if (isset($_GET['specific'])) { 
-                              $sql_employee = 'SELECT `customer_employee_id`, `user_id`, `user_date`, `owner_id`, `name`"Name", `phone`, `email`, `address`, `nic`, `picture`, `comments`,`salary`"Salary" FROM `customer_employee_data` WHERE `customer_employee_id` = '.$_GET['specific'].'';
-                              // echo $sql_employee;
-                              $result_employee = mysqli_query(connect_db(),$sql_employee);
-                              $row_employee = mysqli_fetch_assoc($result_employee);
-
+                        <!-- <h4 class="page-title">Service Request</h4> -->
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <?php if (isset($_SESSION['id'])) { 
+                              $sql = 'SELECT `owner_id`"Owner ID", `user_name` "Entry By", a.`user_date`"Entry Time", `office_name`"Raad Center", `room_name`"Room", `seats`"Seats", `company_name`"Company Name", a.`owner_name`"Owner Name", a.`phone`"Phone", a.`email`"E-mail", a.`address`"Address", `user`.`user_name`"Assign By", `start_date_of_rent`"Start Rent", `end_date_of_rent`"End Rent", `sign_date`"Signature Date", `rent_amount`"Rent Amount", `additional_service_name1`"Additional Service(1)", `additional_service_amount1`"This Amount(1)", `additional_service_name2`"Additional Service(2)", `additional_service_amount2`"This Amount(2)", a.`comment`"Comment",`cnic_scan`, `bill_can`, `agreement_scan`, `undertaking_scan`,`deposit`,`total` FROM `company_with_raad`a,`user`,`raad_offices`,`room_center` where `raad_offices`.`office_id` = a.`raad_office_id` and a.`room_id` = `room_center`.`room_id` and `user`.`user_id` = a.`staff_assign_id` and `owner_id`= '.$_SESSION['id'].' order by `owner_id` DESC';
+                              // echo $sql;
+                              $result = mysqli_query(connect_db(),$sql);
+                              $row = mysqli_fetch_assoc($result);
                               
                               ?>
 
                             <div class="col-lg-12">
                               <div class="card-box task-detail">
                                     <div class="media m-b-20 m-t-0">
-                                        <!-- <div class="media-left">
-                                            <a href="#"> <img class="media-object img-circle" alt="64x64" src="assets/images/users/avatar-2.jpg" style="width: 48px; height: 48px;"> </a>
-                                        </div> -->
-                                        <div class="media-body">
-
-                                            
-                                            <h1 class="label-inverse" style="text-align: center; padding:0.25em; border-radius:0.75em; color: White"><?php
-                                             // print_r($row_employee); 
-                                            echo $row_employee['Name']; ?></h1>
-                                    </div>
-
+                                        <div class="media-body">                                            
+                                            <h1 class="label-inverse" style="text-align: center; padding:0.25em; border-radius:0.75em; color:white"><?php echo $row['Company Name'] ?></h1>
+                                        </div>
                                     <ul class="list-inline task-dates m-b-0 m-t-20">
                                       <li>
-                                            <h5 class="font-600 m-b-5">Contact Details</h5>
-                                            <p class="m-b-0"> <?php
-                                            echo ("Phone : ".$row_employee['phone']); ?></p>
-                                            <p class="m-b-0"> <?php
-                                            echo ("E-mail : ".$row_employee['email']); ?></p>
-                                            <p class="m-b-0"> <?php
-                                            echo ("Address : ".$row_employee['address']); ?></p>
-                                            <p class="m-b-0"> <?php
-                                            echo ("Salary : ".$row_employee['Salary']); ?></p>
+                                            <h5 class="font-600 m-b-5">Owner Name</h5>
+                                            <p> <?php
+                                            echo ($row['Owner Name']);
+                                             ?></p>
                                         </li>
+                                        <li>
+                                            <h5 class="font-600 m-b-5">Start Agreement Date</h5>
+                                            <p> <?php
+                                            $date=date_create($row['Start Rent']);
+                                            echo date_format($date,"d F Y"); ?></p>
+                                        </li>
+
+                                        <li>
+                                            <h5 class="font-600 m-b-5">Center Name</h5>
+                                            <p> <?php
+                                            echo ($row['Raad Center']);?></p>
+                                        </li>
+
+                                        <li>
+                                            <h5 class="font-600 m-b-5">Room Name</h5>
+                                            <p> <?php
+                                            echo ($row['Room']); ?></p>
+                                        </li>
+                                        <li>
+                                            <h5 class="font-600 m-b-5">No. of Seats</h5>
+                                            <p> <?php
+                                            echo ($row['Seats']);?></p>
+                                        </li>
+
                                         <li>
                                             <h5 class="font-700 m-b-5" style="color: white">asda</h5>
                                             <p style="color: white">sdf</p>
@@ -169,26 +203,14 @@ for($k=0;$k<count($row_data);$k++){
                                      </ul>
                                     <div class="clearfix"></div>
 
-                                    <div class="attached-files m-t-30">
-                                        <h5 class="font-600">Attached Files </h5>
-                                        <div style="display: flex;">
-                                            <div class="file-box">
-                                                <a href="<?php echo $row_employee['nic'] ?>"><img width="25%" src="<?php echo $row_employee['nic'] ?>" class="img-responsive img-thumbnail" alt="attached-img"></a>
-                                                <p class="font-13 m-b-5 text-muted"><small>Cnic</small></p>
-                                            </div>
-                                            <div class="file-box">
-                                                <a href="<?php echo $row_employee['picture'] ?>"><img width="25%" src="<?php echo $row_employee['picture'] ?>" class="img-responsive img-thumbnail" alt="attached-img"></a>
-                                                <p class="font-13 m-b-5 text-muted"><small>Picture</small></p>
-                                            </div>
-                                        </div>
-                                    </div>
-
                                 </div>
                                 
                             </div>
                           </div>
                             <?php } ?>
                 </div>
+                
+                <!-- end row -->
 
 
                 <!-- Footer -->

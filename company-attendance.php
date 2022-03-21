@@ -908,17 +908,9 @@ echo "<tr>
                                             <td>".$half_day_exit_deduction."</td>
                                             <td>".$not_punch_deduction."</td>
                                             <td>".$absent_deduction."</td>
-                                            <td><b>".$deducted_salary."</b><form method='POST' ><input type='hidden' name='salary' value = '".$deducted_salary."'> 
-                                            <input type='hidden' name='location_id' value = '".$_GET['id_no']."'>
-                                            <input type='hidden' name='comment' value = '".$_GET['name']." salary'>
-                                            <button type='submit' class='label label-inverse' name='salaryPiad' >Paid</button>
-                                            </form></td>
+                                            <td><b>".$deducted_salary."</b></td>
 
-                                            <td><b>".$salary."</b><form method='POST' ><input type='hidden' name='salary' value = '".$salary."'> 
-                                             <input type='hidden' name='location_id' value = '".$_GET['id_no']."'>
-                                            <input type='hidden' name='comment' value = '".$_GET['name']." salary'>
-                                            <button type='submit' class='label label-inverse' name='salaryPiad' >Paid</button>
-                                            </form></td>
+                                            <td><b>".$salary."</b></td>
                                             </tr>";
                                             ?>
                                         </tbody>

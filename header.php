@@ -72,7 +72,7 @@
                         <!-- Navigation Menu-->
                         <ul class="navigation-menu">
                             <li>
-                                <a href="dashboard.php"><i class="zmdi zmdi-view-dashboard"></i> <span> Dashboard </span> </a>
+                                <a href="home.php"><i class="zmdi zmdi-view-dashboard"></i> <span> Dashboard </span> </a>
                             </li>
                             <li>
                                 <a href="services-request.php"><i class="zmdi zmdi-view-dashboard"></i> <span> Services Request </span> </a>
