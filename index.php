@@ -1,7 +1,7 @@
 <?php
 session_start();
 // if (isset($_SESSION['name']) && $_SERVER['PHP_SELF']=='/raadClient/index.php'){
-if (isset($_SESSION['name']) && $_SERVER['PHP_SELF']=='/index.php'){
+if (isset($_SESSION['nameclient']) && $_SERVER['PHP_SELF']=='/index.php'){
     
     echo '<script>
         location.replace(\'home.php\');
@@ -61,7 +61,7 @@ if($emai_count){
 
     if($db_pass==$password){
 
-        $_SESSION['name'] = $email_pass['owner_name'];
+        $_SESSION['nameclient'] = $email_pass['owner_name'];
         $_SESSION['id'] = $email_pass['owner_id'];
         $_SESSION['e_mail'] = $email_pass['email'];
         $_SESSION['room_id'] = $email_pass['room_id'];
