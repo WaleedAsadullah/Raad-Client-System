@@ -1,7 +1,7 @@
 <?php
 session_start();
-// if (isset($_SESSION['name']) && $_SERVER['PHP_SELF']=='/raadClient/index.php'){
-if (isset($_SESSION['nameclient']) && $_SERVER['PHP_SELF']=='/index.php'){
+if (isset($_SESSION['name']) && $_SERVER['PHP_SELF']=='/raadClient/index.php'){
+// if (isset($_SESSION['nameclient']) && $_SERVER['PHP_SELF']=='/index.php'){
     
     echo '<script>
         location.replace(\'home.php\');

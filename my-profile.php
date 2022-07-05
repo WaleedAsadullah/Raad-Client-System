@@ -359,19 +359,19 @@ insert_query($sql);
                                         <h5 class="font-600">Attached Files </h5>
                                         <div style="display: flex;">
                                             <div class="file-box">
-                                                <a href="<?php echo $row['cnic_scan'] ?>"><img width="95%" src="<?php echo $row['cnic_scan'] ?>" class="img-responsive img-thumbnail" alt="attached-img"></a>
+                                                <a href="raad/<?php echo $row['cnic_scan'] ?>"><img width="95%" src="<?php echo $row['cnic_scan'] ?>" class="img-responsive img-thumbnail" alt="attached-img"></a>
                                                 <p class="font-13 m-b-5 text-muted"><small>Cnic</small></p>
                                             </div>
                                             <div class="file-box">
-                                                <a href="<?php echo $row['bill_can'] ?>"><img width="95%" src="<?php echo $row['bill_can'] ?>" class="img-responsive img-thumbnail" alt="attached-img"></a>
+                                                <a href="raad/<?php echo $row['bill_can'] ?>"><img width="95%" src="<?php echo $row['bill_can'] ?>" class="img-responsive img-thumbnail" alt="attached-img"></a>
                                                 <p class="font-13 m-b-5 text-muted"><small>Bill</small></p>
                                             </div>
                                             <div class="file-box">
-                                                <a href="<?php echo $row['agreement_scan'] ?>"><img width="95%" src="<?php echo $row['agreement_scan'] ?>" class="img-responsive img-thumbnail" alt="attached-img"></a>
+                                                <a href="raad/<?php echo $row['agreement_scan'] ?>"><img width="95%" src="<?php echo $row['agreement_scan'] ?>" class="img-responsive img-thumbnail" alt="attached-img"></a>
                                                 <p class="font-13 m-b-5 text-muted"><small>Agreement</small></p>
                                             </div>
                                             <div class="file-box">
-                                                <a href="<?php echo $row['undertaking_scan'] ?>"><img width="95%" src="<?php echo $row['undertaking_scan'] ?>" class="img-responsive img-thumbnail" alt="attached-img"></a>
+                                                <a href="raad/<?php echo $row['undertaking_scan'] ?>"><img width="95%" src="<?php echo $row['undertaking_scan'] ?>" class="img-responsive img-thumbnail" alt="attached-img"></a>
                                                 <p class="font-13 m-b-5 text-muted"><small>Undertaking</small></p>
                                             </div>
                                         </div>
